@@ -1,18 +1,40 @@
-import React from 'react'
+import React from "react";
+import { Link } from "react-router-dom";
 
 const Home = () => {
   return (
-    <div className='h-screen flex justify-around items-center'>
-      <div className='h-1/2 flex flex-col items-start justify-center gap-12'>
-        <h1 className='font-bold text-5xl'>Looking For A Job?</h1>
-        <p>Create your account today and let's get started!</p>
-        <button className='px-4 py-1 rounded-2xl bg-amber-300'>Get started</button>
+    <div className="min-h-screen flex flex-col md:flex-row items-center justify-between px-6 md:px-16 py-10 bg-white">
+      
+      <div className="w-full md:w-1/2 flex flex-col items-start gap-4 mb-10 md:mb-0">
+        <h1 className="font-bold text-4xl md:text-5xl leading-tight text-black">
+          Looking for more than a job?
+        </h1>
+
+        <p className="text-lg md:text-xl text-gray-800">
+          Not just another networking site — it's <strong className="text-amber-500">DevBonding</strong>.  
+          Find your coding soulmate. Build real software with real people.
+        </p>
+
+        <p className="text-xl text-black">
+          Create your dev profile today and find your perfect project partner!
+        </p>
+
+        <Link to="/register">
+          <button className="mt-4 px-8 py-3 bg-amber-300 text-black font-semibold rounded-md shadow hover:bg-amber-400 transition">
+            Get Started
+          </button>
+        </Link>
       </div>
-      <div className='h-1/2'>
-        <img className='h-full w-full sticky bottom-0' src="/side.jpg" alt="Image" />
+
+      <div className="w-full md:w-1/2 flex justify-center">
+        <img
+          src="/side.jpg"
+          alt="Developers bonding"
+          className="w-full md:w-full object-contain"
+        />
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Home
+export default Home;

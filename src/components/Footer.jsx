@@ -3,38 +3,56 @@ import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
-    <div className="flex flex-col h-full">
-      <div className="w-full p-7 bg-black flex justify-around items-center text-white">
-        <div className="w-1/4 flex flex-col items-start flex-wrap">
-          <h1 className="Logo text-amber-200 text-3xl">Dev Tinder</h1>
-          <p>Not Just Networking. It's DevBonding.</p>
+    <footer className="w-full bg-black text-white px-6 py-10">
+      <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between gap-10">
+        <div className="flex flex-col gap-3">
+          <h1 className="Logo text-3xl font-bold text-amber-300">Dev Tinder</h1>
+          <p className="text-gray-300 max-w-sm">
+            Not Just Networking. It's <strong>DevBonding</strong>. Connect,
+            code, and collaborate with devs who share your vision.
+          </p>
         </div>
-        <div className="w-1/4 flex flex-col items-start flex-wrap">
-          <h1 className="text-amber-200 text-2xl">Quick Links</h1>
-          <ul className="flex flex-col">
-            <Link to={"/"} className="hover:underline cursor-pointer">
-              Home
-            </Link>
-            <Link to={"/job"} className="hover:underline cursor-pointer">
-              Jobs
-            </Link>
-            <Link to={"/about"} className="hover:underline cursor-pointer">
-              About
-            </Link>
-          </ul>
-        </div>
-        <div className="w-1/4 flex flex-col items-start flex-wrap">
-          <h1 className="text-amber-200 text-3xl">Contact</h1>
-          <p>Mail</p>
-          <p>whatsapp</p>
-          <p>instagram</p>
+
+        <div className="flex flex-col md:flex-row gap-10 w-full md:w-2/3 justify-around">
+          <div>
+            <h2 className="text-amber-200 text-xl mb-2">Quick Links</h2>
+            <ul className="flex flex-col gap-1">
+              <Link
+                to="/"
+                className="hover:underline hover:text-amber-300 transition"
+              >
+                Home
+              </Link>
+              <Link
+                to="/job"
+                className="hover:underline hover:text-amber-300 transition"
+              >
+                Jobs
+              </Link>
+              <Link
+                to="/about"
+                className="hover:underline hover:text-amber-300 transition"
+              >
+                About
+              </Link>
+            </ul>
+          </div>
+
+          <div>
+            <h2 className="text-amber-200 text-xl mb-2">Contact</h2>
+            <ul className="flex flex-col gap-1 text-gray-300">
+              <li>Email</li>
+              <li>WhatsApp</li>
+              <li>Instagram</li>
+            </ul>
+          </div>
         </div>
       </div>
-      <hr />
-      <div className="bg-black flex justify-around items-center text-white">
-        <h1 className="pb-3">DevTinder All right reserved</h1>
+
+      <div className="mt-8 text-center text-gray-500 text-sm border-t border-gray-700 pt-4">
+        &copy; {new Date().getFullYear()} Dev Tinder. All rights reserved.
       </div>
-    </div> 
+    </footer>
   );
 };
 
