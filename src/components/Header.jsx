@@ -32,12 +32,18 @@ const Header = () => {
         </ul>
 
         <div className="hidden md:flex gap-4">
-          <button className="px-4 py-1 bg-transparent border border-white rounded hover:bg-white hover:text-black transition">
+          <Link
+            to={"/login"}
+            className="px-4 py-1 border border-white rounded hover:bg-white hover:text-black transition"
+          >
             Login
-          </button>
-          <button className="px-4 py-1 bg-amber-300 text-black rounded hover:bg-amber-400 transition">
+          </Link>
+          <Link
+            to={"/register"}
+            className="px-4 py-1 bg-amber-300 text-black rounded hover:bg-amber-400 transition"
+          >
             Register
-          </button>
+          </Link>
         </div>
 
         <div className="md:hidden">
@@ -62,12 +68,18 @@ const Header = () => {
             </Link>
           ))}
           <div className="flex gap-4">
-            <button className="px-4 py-1 border border-white rounded hover:bg-white hover:text-black transition">
+            <Link
+              to={"/login"}
+              className="px-4 py-1 border border-white rounded hover:bg-white hover:text-black transition"
+            >
               Login
-            </button>
-            <button className="px-4 py-1 bg-amber-300 text-black rounded hover:bg-amber-400 transition">
+            </Link>
+            <Link
+              to={"/register"}
+              className="px-4 py-1 bg-amber-300 text-black rounded hover:bg-amber-400 transition"
+            >
               Register
-            </button>
+            </Link>
           </div>
         </div>
       )}
