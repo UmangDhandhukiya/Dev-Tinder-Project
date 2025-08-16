@@ -25,7 +25,7 @@ const Reg = () => {
             if (!values.fName) {
               errors.fName = "Required";
             }
-             if (!values.lName) {
+            if (!values.lName) {
               errors.lName = "Required";
             }
             if (!values.email) {
@@ -40,11 +40,22 @@ const Reg = () => {
             }
             return errors;
           }}
-          onSubmit={(values, { setSubmitting }) => {
-            setTimeout(() => {
-              alert(JSON.stringify(values, null, 2));
-              setSubmitting(false);
-            }, 400);
+          onSubmit={async (values, { setSubmitting }) => {
+            console.log(values)
+            const response = await fetch("http://localhost:3000/signup", {
+              method: 'POST',
+              headers: {
+                "Content-type": "application/json"
+              },
+              body: JSON.stringify(values)
+            })
+            if (!response.ok) {
+              throw new Error("Registration failed!")
+            }
+            // console.log(response);
+            
+            return await response.json()
+            
           }}
         >
           {({ isSubmitting }) => (
