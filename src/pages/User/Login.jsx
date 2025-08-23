@@ -1,8 +1,10 @@
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import React from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 
+
 const Login = () => {
+  const [errors, seterror] = useState("")
   return (
     <div className="h-screen w-screen flex flex-col md:flex-row p-6 bg-black">
       <div className="hidden md:flex w-1/2 border-2 h-full border-white rounded-tl-3xl rounded-bl-3xl px-8 py-12 flex-col justify-between">
@@ -32,12 +34,33 @@ const Login = () => {
             }
             return error;
           }}
-          onSubmit={(values, { setSubmitting }) => {
-            setTimeout(() => {
-              alert(JSON.stringify(values, null, 2));
-              setSubmitting(false);
-            }, 400);
-          }}
+          onSubmit={async (values, { setSubmitting }) => {
+            try {
+              const response = await fetch("http://localhost:3000/login", {
+                method: 'POST',
+                headers: {
+                  "Content-type": "application/json",
+                },
+                credentials: "include",
+                body: JSON.stringify(values)
+              })
+              const data = await response.json()
+              console.log(data.message);
+
+              if (!response.ok) {
+                seterror(data.message)
+                console.log(errors);
+                return;
+              }
+              else {
+                seterror(data.message)
+              }
+            }
+            catch (err) {
+              console.log(errors);
+            }
+          }
+          }
         >
           {({ isSubmitting }) => (
             <Form className="w-full h-auto flex flex-col items-center gap-8">
@@ -70,7 +93,7 @@ const Login = () => {
                   className="text-red-500 text-sm mt-1"
                 />
               </div>
-
+              {errors && <p style={{ color: "red" }}>{errors}</p>}
               <button
                 type="submit"
                 disabled={isSubmitting}
