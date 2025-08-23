@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 
 const Reg = () => {
+  const [error,seterror] = useState()
   return (
     <div className="h-screen w-screen flex flex-col md:flex-row p-6 bg-black">
       <div className="hidden md:flex w-1/2 border-2 h-full border-white rounded-tl-3xl rounded-bl-3xl px-8 py-12 flex-col justify-between">
@@ -45,17 +46,20 @@ const Reg = () => {
             const response = await fetch("http://localhost:3000/signup", {
               method: 'POST',
               headers: {
-                "Content-type": "application/json"
+                "Content-type": "application/json",
               },
               body: JSON.stringify(values)
             })
+            const data = await response.json()
             if (!response.ok) {
-              throw new Error("Registration failed!")
+              seterror(data.message)
+              return;
+              
             }
-            // console.log(response);
-            
-            return await response.json()
-            
+            else{
+              console.log(data.message);
+  
+            }
           }}
         >
           {({ isSubmitting }) => (
@@ -119,7 +123,7 @@ const Reg = () => {
                   className="text-red-500 text-sm mt-1"
                 />
               </div>
-
+                 {error && <p style={{ color: "red" }}>{error}</p>}
               <button
                 type="submit"
                 disabled={isSubmitting}
