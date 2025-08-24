@@ -7,21 +7,25 @@ import Job from "./pages/User/Job";
 import About from "./pages/User/About";
 import Reg from "./pages/User/Reg";
 import Login from "./pages/User/Login";
+import { Provider } from "react-redux";
+import appStore from "./utils/appStore";
 
 const App = () => {
   return (
     <>
-      <Router>
-        <Routes>
-          <Route path="/" element={<Layout />}>
-            <Route path="/" element={<Home />} />
-            <Route path="/job" element={<Job />} />
-            <Route path="/about" element={<About />} />
-          </Route>
-          <Route path="/register" element={<Reg/>}/>
-          <Route path="/login" element={<Login/>}/>
-        </Routes>
-      </Router>
+      <Provider store={appStore}>
+        <Router>
+          <Routes>
+            <Route path="/" element={<Layout />}>
+              <Route path="/" element={<Home />} />
+              <Route path="/job" element={<Job />} />
+              <Route path="/about" element={<About />} />
+            </Route>
+            <Route path="/register" element={<Reg />} />
+            <Route path="/login" element={<Login />} />
+          </Routes>
+        </Router>
+      </Provider>
     </>
   );
 };

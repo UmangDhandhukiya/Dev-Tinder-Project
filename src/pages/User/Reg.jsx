@@ -1,9 +1,11 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Formik, Form, Field, ErrorMessage } from "formik";
+import { BASE_URL } from "../../utils/Constants";
 
 const Reg = () => {
-  const [error,seterror] = useState()
+  const [error, seterror] = useState();
+  const navigate = useNavigate()
   return (
     <div className="h-screen w-screen flex flex-col md:flex-row p-6 bg-black">
       <div className="hidden md:flex w-1/2 border-2 h-full border-white rounded-tl-3xl rounded-bl-3xl px-8 py-12 flex-col justify-between">
@@ -19,7 +21,7 @@ const Reg = () => {
             fName: "",
             lName: "",
             email: "",
-            password: "",
+            password: ""
           }}
           validate={(values) => {
             const errors = {};
@@ -42,23 +44,22 @@ const Reg = () => {
             return errors;
           }}
           onSubmit={async (values, { setSubmitting }) => {
-            console.log(values)
-            const response = await fetch("http://localhost:3000/signup", {
-              method: 'POST',
+            // console.log(values);
+            const response = await fetch( BASE_URL + "/signup", {
+              method: "POST",
               headers: {
-                "Content-type": "application/json",
+                "Content-type": "application/json"
               },
               body: JSON.stringify(values)
-            })
-            const data = await response.json()
+            });
+            const data = await response.json();
             if (!response.ok) {
-              seterror(data.message)
+              seterror(data.message);
               return;
-              
-            }
-            else{
-              console.log(data.message);
-  
+            } else {
+              // console.log(data.message);
+              navigate("/login")
+
             }
           }}
         >
@@ -70,7 +71,7 @@ const Reg = () => {
 
               <div className="w-full md:w-2/3 flex flex-col">
                 <Field
-                  className="text-white px-5 py-3 rounded-md border border-white"
+                  className="text-white px-5 py-3 border-b border-white bg-transparent focus:outline-none text-sm sm:text-base md:text-lg"
                   type="text"
                   name="fName"
                   placeholder="First Name"
@@ -84,7 +85,7 @@ const Reg = () => {
 
               <div className="w-full md:w-2/3 flex flex-col">
                 <Field
-                  className="text-white px-5 py-3 rounded-md border border-white"
+                  className="text-white px-5 py-3 border-b border-white bg-transparent focus:outline-none text-sm sm:text-base md:text-lg"
                   type="text"
                   name="lName"
                   placeholder="Last Name"
@@ -98,7 +99,7 @@ const Reg = () => {
 
               <div className="w-full md:w-2/3 flex flex-col">
                 <Field
-                  className="text-white px-5 py-3 rounded-md border border-white"
+                  className="text-white px-5 py-3 border-b border-white bg-transparent focus:outline-none text-sm sm:text-base md:text-lg"
                   type="email"
                   name="email"
                   placeholder="Email"
@@ -112,7 +113,7 @@ const Reg = () => {
 
               <div className="w-full md:w-2/3 flex flex-col">
                 <Field
-                  className="text-white px-5 py-3 rounded-md border border-white"
+                  className="text-white px-5 py-3 border-b border-white bg-transparent focus:outline-none text-sm sm:text-base md:text-lg"
                   type="password"
                   name="password"
                   placeholder="Password"
@@ -123,7 +124,9 @@ const Reg = () => {
                   className="text-red-500 text-sm mt-1"
                 />
               </div>
-                 {error && <p style={{ color: "red" }}>{error}</p>}
+
+              {error && <p style={{ color: "red" }}>{error}</p>}
+
               <button
                 type="submit"
                 disabled={isSubmitting}
