@@ -56,7 +56,7 @@ const Login = () => {
                 console.log(errors);
                 return;
               } else {
-                navigate("/");
+                navigate("/feed");
               }
             } catch {
               // console.log(errors);

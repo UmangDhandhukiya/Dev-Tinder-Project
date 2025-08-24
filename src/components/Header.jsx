@@ -10,8 +10,9 @@ const Header = () => {
 
   const navItems = [
     { path: "/", label: "Home" },
-    { path: "/job", label: "Jobs" },
+    { path: "/feed", label: "Feed" },
     { path: "/about", label: "About" },
+    { path: "/profile", label: "Profile" },
   ];
 
   return (
@@ -20,20 +21,22 @@ const Header = () => {
         <h1 className="Logo text-2xl font-bold text-amber-300">Dev-Tinder</h1>
 
         {/* Desktop Nav */}
-        <ul className="hidden md:flex gap-8 items-center">
-          {navItems.map(({ path, label }) => (
-            <li key={path}>
-              <Link
-                to={path}
-                className={`pb-1 border-b-2 transition-all duration-200 ${
-                  pathname === path ? "border-white" : "border-transparent"
-                } hover:border-white`}
-              >
-                {label}
-              </Link>
-            </li>
-          ))}
-        </ul>
+        {user && (
+          <ul className="hidden md:flex gap-8 items-center">
+            {navItems.map(({ path, label }) => (
+              <li key={path}>
+                <Link
+                  to={path}
+                  className={`pb-1 border-b-2 transition-all duration-200 ${
+                    pathname === path ? "border-white" : "border-transparent"
+                  } hover:border-white`}
+                >
+                  {label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        )}
 
         {/* Desktop Auth */}
         {!user && (
@@ -54,7 +57,9 @@ const Header = () => {
         )}
 
         {user && (
-          <h1 className="hidden md:block">Welcome, <span className="text-amber-300">{user.firstname} !</span></h1>
+          <h1 className="hidden md:block">
+            Welcome, <span className="text-amber-300">{user.firstname} !</span>
+          </h1>
         )}
 
         {/* Mobile Menu Button */}
@@ -66,7 +71,7 @@ const Header = () => {
       </div>
 
       {/* Mobile Dropdown Menu */}
-      {isMenuOpen && (
+      {isMenuOpen && user && (
         <div className="md:hidden absolute top-[80px] left-0 w-full bg-black flex flex-col items-center gap-6 py-6 shadow-lg">
           {navItems.map(({ path, label }) => (
             <Link
@@ -97,7 +102,10 @@ const Header = () => {
               </Link>
             </div>
           ) : (
-            <h1 className="text-lg">Welcome, <span className="text-amber-300">{user.firstname} !</span></h1>
+            <h1 className="text-lg">
+              Welcome,{" "}
+              <span className="text-amber-300">{user.firstname} !</span>
+            </h1>
           )}
         </div>
       )}

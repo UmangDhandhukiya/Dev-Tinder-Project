@@ -20,12 +20,14 @@ const Layout = () => {
         },
         credentials: "include",
       });
-      const user = await response.json();
-      dispatch(addUser(user.data));
-    } catch (err) {
-      if (err.status === 401) {
-        navigate("/login");
+      if (response.ok) {
+        const user = await response.json();
+        dispatch(addUser(user.data));
       }
+      else{
+        navigate("/")
+      }
+    } catch (err) {
       console.error(err);
     }
   };
