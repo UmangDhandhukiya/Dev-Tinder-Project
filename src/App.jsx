@@ -10,6 +10,7 @@ import { Provider } from "react-redux";
 import appStore from "./utils/appStore";
 import Feed from "./pages/User/Feed";
 import Profile from "./pages/User/Profile";
+import Connection from "./pages/User/Connection";
 
 
 const App = () => {
@@ -23,6 +24,7 @@ const App = () => {
               <Route path="/feed" element={<Feed />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/about" element={<About />} />
+               <Route path="/connection" element={<Connection />} />
             </Route>
             <Route path="/register" element={<Reg />} />
             <Route path="/login" element={<Login />} />
