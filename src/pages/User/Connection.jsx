@@ -1,64 +1,78 @@
-import React, { useEffect } from 'react'
-import { BASE_URL } from '../../utils/Constants'
-import { useDispatch, useSelector } from 'react-redux'
-import { addConnection } from '../../utils/connection'
+import React, { useEffect } from "react";
+import { BASE_URL } from "../../utils/Constants";
+import { useDispatch, useSelector } from "react-redux";
+import { addConnection } from "../../utils/ConnectionSlice";
+import { User, Briefcase, UserX } from "lucide-react";
 
 const Connection = () => {
-    const dispatch = useDispatch()
-    const connection = useSelector((store) => store.connection)
-    const showconnection = async () => {
-        const response = await fetch(BASE_URL + "/user/request/receiver", {
-            credentials: "include",
-        })
+  const dispatch = useDispatch();
+  const connections = useSelector((store) => store.connection);
 
-        const data = await response.json()
-        console.log(data);
-        
-        dispatch(addConnection(data.data))    
+  const fetchConnections = async () => {
+    try {
+      const response = await fetch(BASE_URL + "/user/connection", {
+        credentials: "include",
+      });
+      const connection = await response.json();
+      dispatch(addConnection(connection?.data));
+    } catch (error) {
+      console.error("Error fetching connections:", error);
     }
+  };
 
-    useEffect(()=>{
-        showconnection()
-    },[])
+  useEffect(() => {
+    fetchConnections();
+  }, []);
 
-    if(!connection) return
+  if (!connections) return null;
 
-    if(connection.length === 0) return <h1>Connection not found</h1>
+  if (connections.length === 0)
     return (
-         <div className="p-6">
-      <h2 className="text-2xl font-bold mb-6 text-gray-800">Your Connections</h2>
+      <div className="flex flex-col items-center justify-center min-h-screen text-gray-400 bg-black">
+        <UserX size={40} className="mb-2 text-amber-300" />
+        <h1 className="text-lg font-semibold">No Connection found !!</h1>
+      </div>
+    );
 
-      <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3">
-        {connection.map((conn) => {
-          const user = conn.fromuserid; 
-          return (
-            <div
-              key={conn._id}
-              className="bg-white shadow-md hover:shadow-lg transition-all duration-300 rounded-2xl p-6 flex flex-col items-center text-center"
-            >
+  return (
+    <div className="min-h-screen bg-black text-white p-6">
+      <h1 className="text-3xl font-bold mb-8 text-amber-300 text-center">
+        Your Connections
+      </h1>
+      <div className="max-w-3xl mx-auto space-y-4">
+        {connections.map((connection, index) => (
+          <div
+            key={index}
+            className="flex items-center justify-between bg-zinc-900 shadow-md rounded-2xl p-4 hover:shadow-lg transition-shadow duration-300"
+          >
+            <div className="flex items-center gap-4">
               <img
-                src={user.imageUrl || "https://via.placeholder.com/150"}
-                alt={user.firstname}
-                className="w-20 h-20 rounded-full mb-4 object-cover border"
+                src={connection.imageUrl}
+                alt={`${connection.firstname} ${connection.lastname}`}
+                className="w-14 h-14 rounded-full object-cover border border-amber-300"
               />
-              <h3 className="text-lg font-semibold text-gray-800">
-                {user.firstname} {user.lastname}
-              </h3>
-              <p className="text-sm text-gray-500">Status: {conn.status}</p>
-                <div className='flex gap-3'>
-              <button className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-xl hover:bg-blue-600 transition">
-                Accepted
-              </button>
-               <button className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-xl hover:bg-blue-600 transition">
-                Rejected
-              </button>
+              <div>
+                <h2 className="text-lg font-semibold flex items-center gap-2">
+                  <User size={18} className="text-amber-300" />
+                  {connection.firstname} {connection.lastname}
+                </h2>
+                <p className="text-sm text-gray-400 flex items-center gap-2">
+                  <Briefcase size={16} className="text-amber-300" />
+                  {connection.skill.length > 0
+                    ? connection.skill.join(", ")
+                    : "No skills added"}
+                </p>
               </div>
             </div>
-          );
-        })}
+
+            <button className="px-4 py-2 text-sm bg-amber-300 text-black font-medium rounded-xl hover:bg-amber-400 transition-colors duration-200">
+              Message
+            </button>
+          </div>
+        ))}
       </div>
     </div>
-    )
-}
+  );
+};
 
-export default Connection
+export default Connection;

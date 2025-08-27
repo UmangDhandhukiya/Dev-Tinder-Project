@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import { useSelector } from "react-redux";
 
@@ -7,106 +7,139 @@ const Header = () => {
   const { pathname } = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const user = useSelector((store) => store.user);
+  const navigate = useNavigate();
 
   const navItems = [
     { path: "/", label: "Home" },
     { path: "/feed", label: "Feed" },
-    { path: "/about", label: "About" },
-    { path: "/profile", label: "Profile" },
-       { path: "/connection", label: "Connections" },
+    { path: "/connection", label: "Connections" },
+    { path: "/requests", label: "Requests" },
   ];
 
   return (
-    <nav className="sticky top-0 z-20 w-full h-[80px] bg-black text-white px-6 md:px-10 shadow-md">
+    <nav
+      className="sticky top-0 z-20 w-full h-[80px] 
+      bg-black backdrop-blur-sm border-b border-amber-300/20
+      text-white px-6 md:px-10 shadow-md"
+    >
       <div className="max-w-7xl mx-auto h-full flex justify-between items-center">
-        <h1 className="Logo text-2xl font-bold text-amber-300">Dev-Tinder</h1>
+        <h1
+          className="Logo text-2xl font-bold text-amber-300 cursor-pointer"
+          onClick={() => navigate("/")}
+        >
+          Dev-Tinder
+        </h1>
 
-        {/* Desktop Nav */}
-        {user && (
-          <ul className="hidden md:flex gap-8 items-center">
-            {navItems.map(({ path, label }) => (
-              <li key={path}>
-                <Link
-                  to={path}
-                  className={`pb-1 border-b-2 transition-all duration-200 ${
-                    pathname === path ? "border-white" : "border-transparent"
-                  } hover:border-white`}
-                >
-                  {label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        )}
-
-        {/* Desktop Auth */}
-        {!user && (
-          <div className="hidden md:flex gap-4">
+        <div className="hidden md:flex items-center gap-8">
+          {navItems.map(({ path, label }) => (
             <Link
-              to={"/login"}
-              className="px-4 py-1 border border-white rounded hover:bg-white hover:text-black transition"
+              key={path}
+              to={path}
+              className={`hover:text-amber-300 transition ${
+                pathname === path ? "text-amber-300 font-semibold" : ""
+              }`}
             >
-              Login
+              {label}
             </Link>
-            <Link
-              to={"/register"}
-              className="px-4 py-1 bg-amber-300 text-black rounded hover:bg-amber-400 transition"
-            >
-              Register
-            </Link>
-          </div>
-        )}
+          ))}
+        </div>
 
-        {user && (
-          <h1 className="hidden md:block">
-            Welcome, <span className="text-amber-300">{user.firstname} !</span>
-          </h1>
-        )}
+        <div className="flex items-center gap-3">
+          {user ? (
+            <div className="flex items-center gap-3">
+              <span className="hidden md:block text-sm text-amber-300">
+                Hi, {user.firstname}
+              </span>
+              <img
+                src={
+                  user.imageUrl ||
+                  "/placeholder.svg?height=40&width=40&query=profile"
+                }
+                alt="profile"
+                onClick={() => navigate("/profile")}
+                className="w-10 h-10 rounded-full object-cover border-2 border-amber-300 cursor-pointer hover:scale-105 transition-transform"
+              />
+            </div>
+          ) : (
+            <div className="hidden md:flex gap-3">
+              <Link
+                to="/login"
+                className="px-4 py-1 border border-amber-300 rounded hover:bg-amber-300 hover:text-black transition"
+              >
+                Login
+              </Link>
+              <Link
+                to="/register"
+                className="px-4 py-1 bg-amber-300 text-black rounded hover:bg-amber-400 transition"
+              >
+                Register
+              </Link>
+            </div>
+          )}
 
-        {/* Mobile Menu Button */}
-        <div className="md:hidden">
-          <button onClick={() => setIsMenuOpen(!isMenuOpen)}>
+          <button
+            className="md:hidden ml-2"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+          >
             {isMenuOpen ? <X size={28} /> : <Menu size={28} />}
           </button>
         </div>
       </div>
 
-      {/* Mobile Dropdown Menu */}
-      {isMenuOpen && user && (
-        <div className="md:hidden absolute top-[80px] left-0 w-full bg-black flex flex-col items-center gap-6 py-6 shadow-lg">
+      {isMenuOpen && (
+        <div
+          className="md:hidden absolute top-[80px] left-0 w-full 
+          bg-black/95 backdrop-blur-md border-t border-amber-300/20
+          flex flex-col items-center gap-6 py-6 shadow-lg"
+        >
           {navItems.map(({ path, label }) => (
             <Link
               key={path}
               to={path}
-              className={`text-lg ${
-                pathname === path ? "text-amber-300" : "text-white"
-              } hover:text-amber-300`}
               onClick={() => setIsMenuOpen(false)}
+              className={`hover:text-amber-300 transition ${
+                pathname === path ? "text-amber-300 font-semibold" : ""
+              }`}
             >
               {label}
             </Link>
           ))}
 
           {!user ? (
-            <div className="flex gap-4">
+            <div className="flex flex-col gap-4 w-full px-6">
               <Link
-                to={"/login"}
-                className="px-4 py-1 border border-white rounded hover:bg-white hover:text-black transition"
+                to="/login"
+                className="px-4 py-2 border border-amber-300 text-center rounded hover:bg-amber-300 hover:text-black transition"
+                onClick={() => setIsMenuOpen(false)}
               >
                 Login
               </Link>
               <Link
-                to={"/register"}
-                className="px-4 py-1 bg-amber-300 text-black rounded hover:bg-amber-400 transition"
+                to="/register"
+                className="px-4 py-2 bg-amber-300 text-black text-center rounded hover:bg-amber-400 transition"
+                onClick={() => setIsMenuOpen(false)}
               >
                 Register
               </Link>
             </div>
           ) : (
-            <h1 className="text-lg">
-              Welcome,{" "}
-              <span className="text-amber-300">{user.firstname} !</span>
-            </h1>
+            <div className="flex flex-col items-center gap-3">
+              <span className="text-amber-300 text-lg">
+                Hi, {user.firstname}
+              </span>
+              <img
+                src={
+                  user.imageUrl ||
+                  "/placeholder.svg?height=80&width=80&query=profile"
+                }
+                alt="profile"
+                onClick={() => {
+                  navigate("/profile");
+                  setIsMenuOpen(false);
+                }}
+                className="w-20 h-20 rounded-full object-cover border-2 border-amber-300 cursor-pointer hover:scale-105 transition-transform"
+              />
+            </div>
           )}
         </div>
       )}
