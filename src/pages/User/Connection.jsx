@@ -3,6 +3,7 @@ import { BASE_URL } from "../../utils/Constants";
 import { useDispatch, useSelector } from "react-redux";
 import { addConnection } from "../../utils/ConnectionSlice";
 import { User, Briefcase, UserX } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Connection = () => {
   const dispatch = useDispatch();
@@ -14,6 +15,8 @@ const Connection = () => {
         credentials: "include",
       });
       const connection = await response.json();
+      console.log(connection.data);
+      
       dispatch(addConnection(connection?.data));
     } catch (error) {
       console.error("Error fetching connections:", error);
@@ -42,7 +45,7 @@ const Connection = () => {
       <div className="max-w-3xl mx-auto space-y-4">
         {connections.map((connection, index) => (
           <div
-            key={index}
+            key={connection._id}
             className="flex items-center justify-between bg-zinc-900 shadow-md rounded-2xl p-4 hover:shadow-lg transition-shadow duration-300"
           >
             <div className="flex items-center gap-4">
@@ -65,9 +68,10 @@ const Connection = () => {
               </div>
             </div>
 
-            <button className="px-4 py-2 text-sm bg-amber-300 text-black font-medium rounded-xl hover:bg-amber-400 transition-colors duration-200">
+           <Link to={"/chat/" + connection._id}> <button className="px-4 py-2 text-sm bg-amber-300 text-black font-medium rounded-xl hover:bg-amber-400 transition-colors duration-200">
               Message
             </button>
+            </Link>
           </div>
         ))}
       </div>
