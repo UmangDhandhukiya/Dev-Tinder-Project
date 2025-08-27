@@ -33,14 +33,10 @@ const Feed = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-black text-white flex items-center justify-center px-4 py-10">
-      {feeds ? (
-        <div className="w-full max-w-sm md:max-w-md">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
+      {feeds && (
+        <div className="w-full max-w-sm">
           <UserProfileCard user={feeds} />
-        </div>
-      ) : (
-        <div className="text-center text-gray-400">
-          <h1 className="text-lg">Loading feed...</h1>
         </div>
       )}
     </div>

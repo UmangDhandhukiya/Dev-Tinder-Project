@@ -11,6 +11,7 @@ import appStore from "./utils/appStore";
 import Feed from "./pages/User/Feed";
 import Profile from "./pages/User/Profile";
 import Connection from "./pages/User/Connection";
+import Request from "./pages/User/Request";
 
 
 const App = () => {
@@ -24,7 +25,8 @@ const App = () => {
               <Route path="/feed" element={<Feed />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/about" element={<About />} />
-               <Route path="/connection" element={<Connection />} />
+              <Route path="/connection" element={<Connection />} />
+              <Route path="/requests" element={<Request />} />
             </Route>
             <Route path="/register" element={<Reg />} />
             <Route path="/login" element={<Login />} />
