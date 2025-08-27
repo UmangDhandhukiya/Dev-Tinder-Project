@@ -56,8 +56,10 @@ const EditProfile = ({ userData }) => {
       }
 
       const data = await response.json();
+      console.log(data);
+      
       console.log("Profile updated:", data);
-      dispatch(addUser(data));
+      dispatch(addUser(data.data));
     } catch (error) {
       console.error("Error while updating profile:", error);
     }
@@ -206,6 +208,7 @@ const EditProfile = ({ userData }) => {
 
           {/* Submit */}
           <button
+          onSubmit={handleEdit}
             type="submit"
             className="w-full bg-blue-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition"
           >
