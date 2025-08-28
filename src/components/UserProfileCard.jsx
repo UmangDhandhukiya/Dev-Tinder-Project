@@ -1,5 +1,32 @@
+import { useDispatch } from "react-redux";
+import { BASE_URL } from "../utils/Constants";
+import { removeUserFromFeed } from "../utils/FeedSlice";
+
 export default function UserProfileCard({ user }) {
-  const { imageUrl, firstname, lastname, gender, skill, about } = user;
+  const { _id, imageUrl, firstname, lastname, gender, skill, about } = user;
+
+  const dispatch = useDispatch();
+
+  const handleSendRequest = async (status, _id) => {
+    try {
+      const response = await fetch(
+        BASE_URL + "/request/send/" + status + "/" + _id,
+        {
+          method: "POST",
+          headers: {
+            "Content-type": "application/json",
+          },
+          credentials: "include",
+        }
+      );
+      const data = await response.json()
+      console.log(data)
+
+      dispatch(removeUserFromFeed(_id));
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   return (
     <div className="w-full max-w-sm mx-auto bg-gradient-to-b from-gray-900 to-black rounded-2xl shadow-lg border border-gray-800 p-6">
@@ -7,8 +34,7 @@ export default function UserProfileCard({ user }) {
         <div className="relative">
           <img
             src={
-              imageUrl ||
-              "/placeholder.svg?height=112&width=112&query=profile"
+              imageUrl || "/placeholder.svg?height=112&width=112&query=profile"
             }
             className="w-24 h-24 sm:w-28 sm:h-28 rounded-full object-cover border-4 border-amber-400 shadow-md"
             alt="profile"
@@ -41,14 +67,21 @@ export default function UserProfileCard({ user }) {
       </div>
 
       <div className="flex gap-3">
-        <button className="flex-1 flex items-center justify-center px-4 py-2 rounded-md text-sm font-medium text-white bg-gradient-to-r from-rose-500 via-red-500 to-pink-600 hover:opacity-90 transition-all duration-300 shadow-md">
-          Ignore
-        </button>
+  <button
+    onClick={() => handleSendRequest("ignored", _id)}
+    className="flex-1 flex items-center justify-center px-4 py-2 rounded-md text-sm font-medium text-white bg-gradient-to-r from-rose-500 via-red-500 to-pink-600 hover:opacity-90 transition-all duration-300 shadow-md"
+  >
+    Ignore
+  </button>
 
-        <button className="flex-1 flex items-center justify-center px-4 py-2 rounded-md text-sm font-medium text-white bg-gradient-to-r from-green-500 via-emerald-500 to-teal-600 hover:opacity-90 transition-all duration-300 shadow-md">
-          Interested
-        </button>
-      </div>
+  <button
+    onClick={() => handleSendRequest("interested", _id)}
+    className="flex-1 flex items-center justify-center px-4 py-2 rounded-md text-sm font-medium text-white bg-gradient-to-r from-green-500 via-emerald-500 to-teal-600 hover:opacity-90 transition-all duration-300 shadow-md"
+  >
+    Interested
+  </button>
+</div>
+
     </div>
   );
 }
