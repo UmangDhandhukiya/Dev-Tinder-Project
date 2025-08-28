@@ -9,12 +9,21 @@ const Header = () => {
   const user = useSelector((store) => store.user);
   const navigate = useNavigate();
 
-  const navItems = [
+  // Navigation items if user is logged in
+  const authNavItems = [
     { path: "/", label: "Home" },
     { path: "/feed", label: "Feed" },
     { path: "/connection", label: "Connections" },
     { path: "/requests", label: "Requests" },
   ];
+
+  // Navigation items if user is not logged in
+  const guestNavItems = [
+    { path: "/", label: "Home" },
+    { path: "/about", label: "About" },
+  ];
+
+  const navItems = user ? authNavItems : guestNavItems;
 
   return (
     <nav
@@ -23,6 +32,7 @@ const Header = () => {
       text-white px-6 md:px-10 shadow-md"
     >
       <div className="max-w-7xl mx-auto h-full flex justify-between items-center">
+        {/* Logo */}
         <h1
           className="Logo text-2xl font-bold text-amber-300 cursor-pointer"
           onClick={() => navigate("/")}
@@ -30,6 +40,7 @@ const Header = () => {
           Dev-Tinder
         </h1>
 
+        {/* Desktop Menu */}
         <div className="hidden md:flex items-center gap-8">
           {navItems.map(({ path, label }) => (
             <Link
@@ -44,6 +55,7 @@ const Header = () => {
           ))}
         </div>
 
+        {/* Right Section */}
         <div className="flex items-center gap-3">
           {user ? (
             <div className="flex items-center gap-3">
@@ -77,6 +89,7 @@ const Header = () => {
             </div>
           )}
 
+          {/* Mobile Menu Button */}
           <button
             className="md:hidden ml-2"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -86,6 +99,7 @@ const Header = () => {
         </div>
       </div>
 
+      {/* Mobile Menu */}
       {isMenuOpen && (
         <div
           className="md:hidden absolute top-[80px] left-0 w-full 

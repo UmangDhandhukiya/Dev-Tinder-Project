@@ -33,7 +33,7 @@ const Home = () => {
           Create your dev profile today and find your perfect project partner!
         </p>
 
-        <Link to="/register">
+        <Link to="/feed">
           <button className="mt-3 sm:mt-4 px-6 sm:px-8 py-2 sm:py-3 
             bg-amber-400 text-black font-semibold rounded-lg shadow 
             hover:bg-amber-500 transition text-sm sm:text-base md:text-lg">
