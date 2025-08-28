@@ -11,6 +11,8 @@ import appStore from "./utils/appStore";
 import Feed from "./pages/User/Feed";
 import Profile from "./pages/User/Profile";
 import Connection from "./pages/User/Connection";
+import Chat from "./pages/User/Chat";
+import Request from "./pages/User/Request";
 
 
 const App = () => {
@@ -25,6 +27,8 @@ const App = () => {
               <Route path="/profile" element={<Profile />} />
               <Route path="/about" element={<About />} />
                <Route path="/connection" element={<Connection />} />
+               <Route path="/requests" element={<Request/>} />
+               <Route path="/chat/:targetuserid" element={<Chat/>}/>
             </Route>
             <Route path="/register" element={<Reg />} />
             <Route path="/login" element={<Login />} />
