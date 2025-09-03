@@ -25,7 +25,7 @@ const Layout = () => {
         dispatch(addUser(user.data));
       }
       else{
-        navigate("/")
+        navigate("/login")
       }
     } catch (err) {
       console.error(err);
