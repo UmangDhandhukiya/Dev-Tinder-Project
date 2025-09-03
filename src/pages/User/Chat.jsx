@@ -1,112 +1,158 @@
-import React, { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
-import { createSocketConnection } from '../../utils/socket';
-import { useSelector } from 'react-redux';
-import { BASE_URL } from '../../utils/Constants';
+import React, { useEffect, useState, useRef } from "react";
+import { useParams } from "react-router-dom";
+import { createSocketConnection } from "../../utils/socket";
+import { useSelector } from "react-redux";
+import { BASE_URL } from "../../utils/Constants";
+import { ArrowLeft, Send } from "lucide-react";
 
 const Chat = () => {
   const { targetuserid } = useParams();
-  const [message, setmessage] = useState([]);
-  const [newmessage, setnewmessage] = useState("")
-  // console.log(targetuserid);
-  const user = useSelector(store => store.user)
+  const [messages, setMessages] = useState([]);
+  const [newMessage, setNewMessage] = useState("");
+  const user = useSelector((store) => store.user);
   const userId = user?._id;
+  const messagesEndRef = useRef(null);
+  const socketRef = useRef(null);
 
-  const fetchchatmessages = async () => {
+  const fetchChatMessages = async () => {
     const chat = await fetch(BASE_URL + "/chat/" + targetuserid, {
       credentials: "include",
     });
-    const data = await chat.json()
-    console.log(data.messages);
-    const chatmessages = data?.messages.map((msg) => {
-      return {senderId: msg?.senderId?._id, firstname: msg?.firstname, lastname: msg?.lastname, text: msg.text };
-    });
-    setmessage(chatmessages)
+    const data = await chat.json();
+    const chatMessages = data?.messages.map((msg) => ({
+      senderId: msg?.senderId?._id,
+      firstname: msg?.senderId?.firstname,
+      lastname: msg?.senderId?.lastname,
+      profileImage: msg?.senderId?.profileImage, // profile
+      text: msg.text,
+    }));
+    setMessages(chatMessages);
   };
 
   useEffect(() => {
-    fetchchatmessages();
-  }, [])
+    fetchChatMessages();
+  }, []);
 
   useEffect(() => {
-    if (!userId) {
-      return;
-    }
+    if (!userId) return;
     const socket = createSocketConnection();
-    socket.emit("joinChat", { firstname: user.firstname, userId, targetuserid });
+    socketRef.current = socket;
 
-    socket.on("messageReceiveived", ({firstname, text }) => {
-      console.log(firstname + " " + text);
-      setmessage((message) => [...message, { firstname, text }])
-    })
+    socket.emit("joinChat", {
+      firstname: user.firstname,
+      userId,
+      targetuserid,
+    });
+
+    socket.on("messageReceiveived", ({ firstname, lastname, senderId, text, profileImage }) => {
+      setMessages((prev) => [
+        ...prev,
+        { firstname, lastname, senderId, text, profileImage },
+      ]);
+    });
 
     return () => {
       socket.disconnect();
-    }
-  }, [userId, targetuserid])
+    };
+  }, [userId, targetuserid]);
 
   const sendMessage = () => {
-    const socket = createSocketConnection();
-    socket.emit("sendMessage", { firstname: user.firstname, lastname: user.lastname, userId, targetuserid, text: newmessage })
-    setnewmessage("")
-  }
+    if (!newMessage.trim()) return;
+
+    const msgData = {
+      firstname: user.firstname,
+      lastname: user.lastname,
+      userId,
+      targetuserid,
+      text: newMessage,
+      profileImage: user.profileImage, // add current user image
+    };
+
+    // Optimistic update
+    setMessages((prev) => [...prev, { ...msgData, senderId: userId }]);
+
+    socketRef.current.emit("sendMessage", msgData);
+    setNewMessage("");
+  };
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
   return (
-    <>
-     <div className="flex flex-col h-[90vh] bg-gray-100">
-  {/* Header */}
-  <div className="p-4 bg-blue-600 text-white font-semibold text-lg shadow">
-    Chat Support
-  </div>
-
-  {/* Messages */}
-  <div className="flex-1 overflow-y-auto p-4 space-y-3">
-    {message.map((msg, index) => (
-      <div
-        key={index}
-        className={`flex ${msg.senderId === userId ? "justify-end" : "justify-start"}`}
-      >
-        <div
-          className={`px-4 py-2 rounded-2xl max-w-xs shadow ${
-            msg.senderId === userId
-              ? "bg-blue-600 text-white rounded-br-none"
-              : "bg-white text-gray-800 rounded-bl-none"
-          }`}
-        >
-          <div
-            className={`text-xs font-semibold mb-1 ${
-              msg.senderId === userId ? "text-blue-100 text-right" : "text-gray-500"
-            }`}
-          >
-            {msg.firstname} {msg.lastname}
-          </div>
-          <div>{msg.text}</div>
-        </div>
+    <div className="flex flex-col h-[90vh] bg-black text-white">
+      {/* Header */}
+      <div className="flex items-center gap-3 p-4 bg-amber-300 text-black font-semibold shadow">
+        <ArrowLeft size={22} className="cursor-pointer" />
+        <span className="text-lg">Chat</span>
       </div>
-    ))}
-  </div>
 
-  {/* Input box + Send button */}
-  <div className="p-4 bg-white border-t flex gap-2">
-    <input
-      value={newmessage}
-      onChange={(e) => setnewmessage(e.target.value)}
-      type="text"
-      className="flex-1 border rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-      placeholder="Type a message..."
-    />
-    <button
-      onClick={sendMessage}
-      className="bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700 transition"
-    >
-      Send
-    </button>
-  </div>
-</div>
+      {/* Messages */}
+      <div className="flex-1 overflow-y-auto p-4 space-y-3">
+        {messages.map((msg, index) => {
+          const isSender = msg.senderId === userId;
+          return (
+            <div
+              key={index}
+              className={`flex items-end gap-2 ${
+                isSender ? "justify-end" : "justify-start"
+              }`}
+            >
+              {/* Profile Image (left side for receiver, right side for sender) */}
+              {!isSender && msg.profileImage && (
+                <img
+                  src={msg.profileImage}
+                  alt="profile"
+                  className="w-8 h-8 rounded-full object-cover"
+                />
+              )}
+              <div
+                className={`px-4 py-2 rounded-2xl max-w-xs sm:max-w-md shadow text-sm ${
+                  isSender
+                    ? "bg-amber-300 text-black rounded-br-none"
+                    : "bg-zinc-800 text-white rounded-bl-none"
+                }`}
+              >
+                <div
+                  className={`text-[10px] mb-1 ${
+                    isSender ? "text-black text-right" : "text-gray-400"
+                  }`}
+                >
+                  {msg.firstname} {msg.lastname}
+                </div>
+                <div>{msg.text}</div>
+              </div>
+              {isSender && user?.profileImage && (
+                <img
+                  src={user.profileImage}
+                  alt="me"
+                  className="w-8 h-8 rounded-full object-cover"
+                />
+              )}
+            </div>
+          );
+        })}
+        <div ref={messagesEndRef} />
+      </div>
 
-    </>
+      {/* Input */}
+      <div className="p-4 bg-zinc-900 border-t border-zinc-800 flex gap-2">
+        <input
+          value={newMessage}
+          onChange={(e) => setNewMessage(e.target.value)}
+          type="text"
+          className="flex-1 border border-zinc-700 rounded-full px-4 py-2 bg-black text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-300"
+          placeholder="Type a message..."
+        />
+        <button
+          onClick={sendMessage}
+          className="bg-amber-300 text-black px-4 py-2 rounded-full hover:bg-amber-400 transition"
+        >
+          <Send size={18} />
+        </button>
+      </div>
+    </div>
+  );
+};
 
-  )
-}
-
-export default Chat
+export default Chat;
